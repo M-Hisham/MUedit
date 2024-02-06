@@ -11,13 +11,20 @@
 % coordinates: x and y coordinates of each electrode
 % IED: inter electrode distance
 % discardChannelsVec: vector of discarded channels after visual checking (1 = discarded channel);
-
+% emgtype: 1 = surface, 2 = intra
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [coordinates, IED, discardChannelsVec, emgtype] = formatsignalHDEMG(signal, gridname, fsamp, checkEMG, nbelectrodes)
+function [coordinates, IED, discardChannelsVec, emgtype] = formatsignalHDEMG(signal, gridname, fsamp, checkEMG, nbelectrodes, muscle)
 
 % Define the parameters depending on the name of the grid
 switch gridname
+    case 'Galileo'
+        ElChannelMap = ([1 4 ; ...
+                        2 3 ]);
+        discardChannelsVec = zeros(4,1);
+        IED = 5;
+        emgtype = 1; 
+
     case 'GR04MM1305'
         ElChannelMap = ([1 25 26 51 52; ...
                        1 24 27 50 53; ...  
@@ -139,7 +146,7 @@ if checkEMG == 1
                 ch = ch+1;
             end
         end
-        title(['Column#' num2str(c)], 'Color', [0.9412 0.9412 0.9412], 'FontName', 'Avenir Next', 'FontSize', 20)
+        title(['Column# ', num2str(c), ': ', char(muscle)], 'Color', '#f0f0f0', 'FontName', 'Avenir Next', 'FontSize', 20)
         xlabel('Time (s)', 'FontName', 'Avenir Next', 'FontSize', 20)
         ylabel('Row #', 'FontName', 'Avenir Next', 'FontSize', 20)
         set(gcf,'Color', [0.5 0.5 0.5]);

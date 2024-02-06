@@ -25,7 +25,7 @@ function filteredsignal = removelineinter(signal,frad,fsamp)
 fsignal = fft(signal);
 fcorrec = zeros(1,length(fsignal));  
 
-window = fsamp;
+window = fix(fsamp);
 tstamp = zeros(1,length(fsignal));
 pos_tstamp = 1;
 

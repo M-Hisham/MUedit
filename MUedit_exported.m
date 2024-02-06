@@ -196,13 +196,15 @@ classdef MUedit_exported < matlab.apps.AppBase
             % 0a: determine the number and type of grids
             C = strsplit(app.filename,'.');
             if isequal(C{end}, 'mat')
-                load([app.pathname app.filename], 'signal');
+%                 load([app.pathname app.filename], 'signal');
+                signal = load([app.pathname app.filename]);
+                signal = signal.signal;
             else
                 signal = openOTBplus(app.pathname, app.filename, parameters.ref_exist, parameters.nbelectrodes);
             end
 
             for i = 1:signal.ngrid
-                [signal.coordinates{i}, signal.IED(i), signal.EMGmask{i}, signal.emgtype(i)] = formatsignalHDEMG(signal.data((i-1)*parameters.nbelectrodes+1:i*parameters.nbelectrodes,:), signal.gridname{i}, signal.fsamp, parameters.checkEMG, parameters.nbelectrodes);
+                [signal.coordinates{i}, signal.IED(i), signal.EMGmask{i}, signal.emgtype(i)] = formatsignalHDEMG(signal.data((i-1)*parameters.nbelectrodes+1:i*parameters.nbelectrodes,:), signal.gridname{i}, signal.fsamp, parameters.checkEMG, parameters.nbelectrodes, signal.muscle{i});
             end
             
             if parameters.ref_exist == 1
@@ -222,9 +224,9 @@ classdef MUedit_exported < matlab.apps.AppBase
                 signalprocess.ref_signal = mean(tmp,1);
                 signal.target = signalprocess.ref_signal;
                 signal.path = signalprocess.ref_signal;
-                plot(app.UIAxes_Decomp_2, tmp', 'Color', [0.5 0.5 0.5], 'LineWidth', 0.25)
+                plot(app.UIAxes_Decomp_2, signal.Time{1},tmp', 'Color', [0.5 0.5 0.5], 'LineWidth', 0.25)
                 hold(app.UIAxes_Decomp_2, 'on')
-                plot(app.UIAxes_Decomp_2, signalprocess.ref_signal, 'Color', [0.85 0.33 0.10], 'LineWidth', 2)
+                plot(app.UIAxes_Decomp_2,signal.Time{1}, signalprocess.ref_signal, 'Color', [0.85 0.33 0.10], 'LineWidth', 2)
                 app.UIAxes_Decomp_2.XColor = [0.9412 0.9412 0.9412];
                 app.UIAxes_Decomp_2.YColor = [0.9412 0.9412 0.9412];
                 app.UIAxes_Decomp_2.YLim = [0 max(signalprocess.ref_signal)*1.5];
@@ -232,8 +234,9 @@ classdef MUedit_exported < matlab.apps.AppBase
                 hold(app.UIAxes_Decomp_2, 'off')
                 for nwin = 1:parameters.nwindows
                     app.EditField.Value = ['EMG amplitude for 50% of the EMG channels - Select the window #' num2str(nwin)];
+                    % waiting here for the ROI
                     app.roi = drawrectangle(app.UIAxes_Decomp_2);
-                    x = [app.roi.Position(1) app.roi.Position(1) + app.roi.Position(3)];
+                    x = [app.roi.Position(1) app.roi.Position(1) + app.roi.Position(3)] *signal.fsamp;
                     signalprocess.coordinatesplateau(nwin*2-1) = floor(x(1));
                     signalprocess.coordinatesplateau(nwin*2) = floor(x(2));
                     for i = 1:signal.ngrid
