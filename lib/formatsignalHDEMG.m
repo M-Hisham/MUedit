@@ -18,6 +18,7 @@ function [coordinates, IED, discardChannelsVec, emgtype] = formatsignalHDEMG(sig
 
 % Define the parameters depending on the name of the grid
 switch gridname
+    % need to att B sleeve electrode structure
     case 'Galileo'
         ElChannelMap = ([1 4 ; ...
                         2 3 ]);
@@ -130,6 +131,7 @@ end
 
 % Notch filter and bandpassfilter before visualization
 signal = notchsignals(signal,fsamp);
+% disp(["filter is off"]);
 
 % Visual checking of EMG signals by column
 if checkEMG == 1
