@@ -14,11 +14,37 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [coordinates, IED, discardChannelsVec, emgtype] = formatsignalHDEMG(signal, gridname, fsamp, checkEMG)
+function [coordinates, IED, discardChannelsVec, emgtype] = formatsignalHDEMG(signal, gridname, fsamp, checkEMG, muscle)
 
+
+    
 for i = 1:length(gridname)
     % Define the parameters depending on the name of the grid
-    if contains(gridname{i}, 'GR04MM1305') || contains(gridname{i}, 'HD04MM1305')
+    if contains(gridname{i}, 'BAT-M02-10')
+        % is map is appoximate
+        ElChannelMap = ([1 2 3 4 5 6 7; ...
+                        8 9 10 11 12 13 14; ...
+                        15 16 17 18 19 20 21; ...
+                        22 23 24 25 26 27 28; ...
+                        29 30 31 32 33 34 35; ...
+                        36 37 38 39 40 41 42; ...
+                        43 44 45 46 47 48 49; ...
+                        50 51 52 53 54 55 56; ...
+                        57 58 59 60 61 62 63; ...
+                        64 65 66 67 68 69 70]);
+
+        discardChannelsVec = zeros(70,1);
+        IED(i) = 2.5; %mm, each electrode 12 in diameter
+        emgtype(i) = 1; 
+
+    elseif contains(gridname{i}, 'Galileo')
+        ElChannelMap = ([1 4 ; ...
+                        2 3 ]);
+        discardChannelsVec = zeros(4,1);
+        IED(i) = 5;
+        emgtype(i) = 1; 
+    % Define the parameters depending on the name of the grid
+    elseif contains(gridname{i}, 'GR04MM1305') || contains(gridname{i}, 'HD04MM1305')
         ElChannelMap = ([1 25 26 51 52; ...
                        1 24 27 50 53; ...  
                        2 23 28 49 54; ...
@@ -154,7 +180,7 @@ for i = 1:length(gridname)
                     ch = ch+1;
                 end
             end
-            title(['Column#' num2str(c)], 'Color', [0.9412 0.9412 0.9412], 'FontName', 'Avenir Next', 'FontSize', 20)
+            title(['Column# ', num2str(c), ': ', char(muscle{i})], 'Color', '#f0f0f0', 'FontName', 'Avenir Next', 'FontSize', 20)
             xlabel('Time (s)', 'FontName', 'Avenir Next', 'FontSize', 20)
             ylabel('Row #', 'FontName', 'Avenir Next', 'FontSize', 20)
             set(gcf,'Color', [0.5 0.5 0.5]);
