@@ -33,14 +33,16 @@ for i = 1:length(gridname)
                         57 58 59 60 61 62 63; ...
                         64 65 66 67 68 69 70]);
 
-        discardChannelsVec = zeros(70,1);
+        discardChannelsVec{i} = zeros(70,1);
+        nbelectrodes = 70;
         IED(i) = 2.5; %mm, each electrode 12 in diameter
         emgtype(i) = 1; 
 
     elseif contains(gridname{i}, 'Galileo')
         ElChannelMap = ([1 4 ; ...
                         2 3 ]);
-        discardChannelsVec = zeros(4,1);
+        discardChannelsVec{i} = zeros(4,1);
+        nbelectrodes = 4;
         IED(i) = 5;
         emgtype(i) = 1; 
     % Define the parameters depending on the name of the grid
