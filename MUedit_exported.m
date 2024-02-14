@@ -273,6 +273,7 @@ classdef MUedit_exported < matlab.apps.AppBase
             if contains(app.ReferenceDropDown.Value, 'Target')
                 signalprocess.ref_signal = signal.target;
                 signalprocess.coordinatesplateau = segmenttargets(signalprocess.ref_signal, parameters.nwindows, parameters.thresholdtarget);
+                plot(app.UIAxes_Decomp_2, signalprocess.ref_signal, 'Color', [0.8 0.8 0.8], 'LineWidth', 2)
                 for nwin = 1:length(signalprocess.coordinatesplateau)/2
                     for i = 1:signal.ngrid
                         signalprocess.data{i,nwin} = signal.data(arraynb==i, signalprocess.coordinatesplateau(nwin*2-1):signalprocess.coordinatesplateau(nwin*2));
@@ -318,7 +319,7 @@ classdef MUedit_exported < matlab.apps.AppBase
                 signalprocess.ref_signal = (signalprocess.ref_signal-signalprocess.ref_signal(1))/max((signalprocess.ref_signal-signalprocess.ref_signal(1)));
                 signal.target = signalprocess.ref_signal;
                 signal.path = signalprocess.ref_signal;
-                plot(app.UIAxes_Decomp_2, signalprocess.ref_signal, 'Color', [0.5 0.5 0.5], 'LineWidth', 2)
+                plot(app.UIAxes_Decomp_2, signalprocess.ref_signal, 'Color', [0.8 0.8 0.8], 'LineWidth', 2)
                 app.UIAxes_Decomp_2.XColor = [0.9412 0.9412 0.9412];
                 app.UIAxes_Decomp_2.YColor = [0.9412 0.9412 0.9412];
                 app.UIAxes_Decomp_2.YLim = [1 length(signal.target)];
